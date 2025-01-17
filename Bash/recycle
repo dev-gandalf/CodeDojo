@@ -1,0 +1,220 @@
+#!/bin/bash
+
+
+# Check if recyclebin and .restore.info exists. If not, create one
+
+	if [ ! -e $HOME/recyclebin ] ; then
+		mkdir $HOME/recyclebin
+	fi
+	
+	
+			if [ ! -e $HOME/.restore.info ] ; then
+				touch $HOME/.restore.info
+			fi
+
+
+# setting flags and initializing getopts functionality
+
+i=false
+v=false
+
+
+
+while getopts :iv opt
+do
+  case $opt in
+    i)  i=true ;;
+    v)  v=true ;;
+    *) echo "$OPTARG is an invalid option. Please try -i -v"
+		exit 1 ;;
+	
+        
+  esac
+done
+shift $(($OPTIND - 1))
+
+
+# No file name provided error
+
+	if [ $# -eq 0 ] ; then
+		echo "No filename was provided"							
+		exit 1							
+	fi
+
+
+
+
+# Function to check if files exit, is a directory or if deleting recycle script
+	
+function filechecker() {
+
+
+		
+		
+		
+			if [ $# -gt 0 ] && [ -d $1 ] || [ ! -e $1 ] || [ "$(basename $1 2> /dev/null)" = "recycle" ] ; then
+						
+						
+						if [ "$(basename $1)" = "recycle" ] ; then
+							echo "Attempting to delete recycle – operation aborted"
+							exit 1
+						
+						
+								elif [ ! -e $1 ] ; then
+								echo "File:$(readlink -f $1) - Does not exist"
+								nofilevar=true
+						
+								else
+								echo "$(readlink -f $1) - Is a Directory"
+								dirvar=true
+								
+						
+						fi
+			fi			
+						
+							
+}										
+													
+				
+		
+		
+# Function to move files to recyclebin and entry in .restore.info		
+					
+function filemover() {						
+
+			if [ $# -gt 0 ] && [ "$dirvar" = "false" ] && [ "$nofilevar" = "false" ]; then
+					
+					filename="$(basename $1)"_$(ls -i $1 | cut -d" " -f1)
+					filepath=$(readlink -f $1)
+					mv $(readlink -f $1) $HOME/recyclebin/$filename
+					echo "$filename:$filepath" >> $HOME/.restore.info
+					
+				
+				
+			fi
+		 
+}		
+
+
+# Filemover function with verbose output
+
+function filemover_verbose() {						
+
+			if [ $# -gt 0 ] && [ "$dirvar" = "false" ] && [ "$nofilevar" = "false" ]; then
+					
+					filename="$(basename $1)"_$(ls -i $1 | cut -d" " -f1)
+					filepath=$(readlink -f $1)
+					mv $(readlink -f $1) $HOME/recyclebin/$filename
+					echo "File:$filepath - moved to recyclebin"
+					echo "$filename:$filepath" >> $HOME/.restore.info
+					
+				
+				
+			fi
+		 
+}
+
+	
+
+
+
+
+# In case of no argument
+
+if [ "$i" = "false" ] && [ "$v" = "false" ] ;then
+
+	while [ $# -gt 0 ] ; do
+		dirvar=false
+		nofilevar=false
+		
+		
+		filechecker $1
+		filemover $1
+		
+		shift
+	
+
+	done
+fi
+
+
+# In case of -v option
+
+if [ "$i" = "false" ] && [ "$v" = "true" ] ;then
+
+	while [ $# -gt 0 ] ; do
+		dirvar=false
+		nofilevar=false
+		
+		
+		filechecker $1
+		filemover_verbose $1
+		
+		
+		shift
+	
+
+	done
+fi
+
+
+
+
+
+# In case of -i option
+
+if [ "$i" = "true" ] && [ "$v" = "false" ] ; then
+
+	while [ $# -gt 0 ] ; do
+	
+	dirvar=false
+	nofilevar=false
+	
+	filechecker $1
+	
+			if [ $# -gt 0 ] && [ "$dirvar" = "false" ] && [ "$nofilevar" = "false" ]; then	
+
+				read -p "Are you sure you want to delete $(readlink -f $1) ? " confirm
+
+						case $confirm in
+							[yY]*) 	filemover $1 ;;
+									
+							
+								*) 	 ;;
+						esac
+			fi
+
+		shift
+	done
+			
+fi
+
+# In case of -iv option
+
+
+if [ "$i" = "true" ] && [ "$v" = "true" ] ; then
+
+	while [ $# -gt 0 ] ; do
+	
+	dirvar=false
+	nofilevar=false
+	
+	filechecker $1
+	
+			if [ $# -gt 0 ] && [ "$dirvar" = "false" ] && [ "$nofilevar" = "false" ]; then	
+
+				read -p "Are you sure you want to delete $(readlink -f $1) ? " confirm
+
+						case $confirm in
+							[yY]*) 	filemover_verbose $1 ;;
+									
+							
+								*) 	 ;;
+						esac
+			fi
+
+		shift
+	done
+			
+fi
+

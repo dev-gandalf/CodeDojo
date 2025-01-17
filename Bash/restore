@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Error checking 
+
+
+	if [ $# -eq 0 ] ; then
+						
+			echo "No filename was provided"							
+			exit 1							
+	fi
+
+
+
+	if [ ! -e $HOME/recyclebin/$1 ] ; then
+			
+			echo "File does not exit"
+			exit 1
+			
+	fi
+
+
+
+# Path name retrieval
+
+	pathname=$(grep $1 $HOME/.restore.info | cut -d":" -f2)
+
+
+
+
+# Function to restore the file
+
+function retrieve() { 	mv $HOME/recyclebin/$1 $pathname
+						cat $HOME/.restore.info | grep -v $1 > $HOME/.tempfile
+						mv $HOME/.tempfile $HOME/.restore.info 
+}
+						
+
+
+# Overide confirmation and restoration of the file
+
+	if [ -e "$pathname" ]; then
+
+			read -p "File already exists. Do you want to Overide? " confirm
+
+
+				case $confirm in
+					[yY]*) retrieve $1 ;;
+
+						
+					*) exit 0 ;;
+				esac
+				
+		else
+			 retrieve $1
+
+	fi
