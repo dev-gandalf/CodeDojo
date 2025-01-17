@@ -1,0 +1,18 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/suhas/Programming/Python/alien_invasion/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+AlienInvasion	alien_invasion.py	/^class AlienInvasion:$/;"	c
+Ship	ship.py	/^class Ship:$/;"	c
+__init__	alien_invasion.py	/^    def __init__(self):$/;"	m	class:AlienInvasion
+__init__	ship.py	/^    def __init__(self, ai_game):$/;"	m	class:Ship
+ai	alien_invasion.py	/^    ai = AlienInvasion()$/;"	v
+blitme	ship.py	/^    def blitme(self):$/;"	m	class:Ship
+run_game	alien_invasion.py	/^    def run_game(self):$/;"	m	class:AlienInvasion
