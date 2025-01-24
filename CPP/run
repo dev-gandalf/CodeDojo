@@ -1,0 +1,11 @@
+#!/bin/bash
+
+input=$@
+
+output=${input%.*}
+
+c++  $input -o binaries/$output
+
+
+./binaries/$output
+

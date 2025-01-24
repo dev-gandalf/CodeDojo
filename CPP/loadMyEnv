@@ -1,0 +1,6 @@
+#!/bin/bash
+
+newPath=$(pwd)
+
+export PATH="$PATH:$newPath"
+export TEST="You are in new Environment"
