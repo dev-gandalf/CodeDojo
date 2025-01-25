@@ -6,6 +6,14 @@ output=${input%.*}
 
 c++  $input -o binaries/$output
 
+exitCode=$?
 
+if [ $exitCode == 0 ]; then
+
+echo "Compiled $input successfully. Executing program..."
 ./binaries/$output
+
+else
+	echo "Compilation of $input failed"
+fi
 
